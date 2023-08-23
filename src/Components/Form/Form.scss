@@ -18,9 +18,12 @@ form {
         background: #ccc;
 
         &:hover, &.active {
-          background: #fff;
+          background: rgb(41, 8, 124);
+          color: white;
         }
       }
     }
   }
+
 }
+

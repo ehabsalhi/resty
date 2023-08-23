@@ -33,8 +33,8 @@ function App ()  {
     return (
       <React.Fragment>
         <Header />
-        <div>Request Method: {requestParams.method}</div>
-        <div>URL: {requestParams.url}</div>
+        <div data-testid = 'Request_Method'>Request Method: {requestParams.method}</div>
+        <div  data-testid  = 'url'>URL: {requestParams.url}</div>
         <Form handleApiCall={callApi} setLoading = {setLoading}  />
         <Results data={data} loading ={loading} />
         <Footer />

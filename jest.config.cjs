@@ -1,10 +1,13 @@
 module.exports = {
-     transform: {
-       '^.+\\.[jt]sx?$': 'babel-jest'
-     },
-     testEnvironment: 'jsdom',
-     moduleDirectories: ['node_modules', 'src'],
-     moduleNameMapper: {
-       '\\.(css|scss)$': 'identity-obj-proxy'
-     }
-   };
+  transformIgnorePatterns: [
+    "/node_modules/(?!axios).+\\.js$"
+  ],
+  "transform": {
+    "^.+\\.(js|jsx)?$": "babel-jest"
+  }
+,
+  "moduleNameMapper": {
+    "\\.(css|scss)$": "identity-obj-proxy",
+    axios: 'axios/dist/node/axios.cjs'
+  }
+};

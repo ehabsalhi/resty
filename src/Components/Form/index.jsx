@@ -30,14 +30,7 @@ function Form({ handleApiCall , setLoading }) {
    })
 
  }
-  
 
-  // useEffect(() => {
-  //   formData.url = inputValue 
-  //   formData.response = response
-  // },[response])
-
-  
   
   const inputData = (e) => {
     setInputValue(e.target.value)
@@ -58,14 +51,14 @@ function Form({ handleApiCall , setLoading }) {
 
     return (
       <>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-testid = 'form'>
           <label >
             <span>URL: </span>
             <input name='url' type='text' onChange={inputData} />
-            <button type="submit">GO!</button>
+            <button type="submit"  data-testid= 'submitBtn'>GO!</button>
           </label>
           <label className="methods">
-            <span onClick={getMethod} id="get">GET</span>
+            <span onClick={getMethod} id="get" data-testid= 'get'>GET</span>
             <span onClick={getMethod} id="post">POST</span>
             <span onClick={getMethod} id="put">PUT</span>
             <span onClick={getMethod} id="delete">DELETE</span>

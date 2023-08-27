@@ -1,5 +1,7 @@
 import '../Results/result.scss'
-import ReactJson from 'react-json-view';
+// import ReactJson from 'react-json-view';
+import JSONPretty from "react-json-prettify";
+
 
 function Results({ data, loading }) {
 
@@ -9,7 +11,9 @@ function Results({ data, loading }) {
         !loading ? 
       
       <section className='section-result' data-testid = 'response'>
-            <ReactJson className='pre' src={data} displayDataTypes = {false}  indentWidth={2} />
+            {/* <ReactJson className='pre' src={data} displayDataTypes={false} indentWidth={2} /> */}
+            <JSONPretty className='pre' json={data} />
+
       </section>
           : <div className='loading'>Loading ...</div>
       }

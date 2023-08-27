@@ -1,12 +1,15 @@
 import '../Results/result.scss'
-function Results ({data , loading}){
+import ReactJson from 'react-json-view';
+
+function Results({ data, loading }) {
+
   return (
     <div className="contaner-result">  
       {
         !loading ? 
       
-      <section className='section-result'>
-        <pre className='pre'>{data ? JSON.stringify(data, undefined, 2) : null}</pre>
+      <section className='section-result' data-testid = 'response'>
+            <ReactJson className='pre' src={data} displayDataTypes = {false}  indentWidth={2} />
       </section>
           : <div className='loading'>Loading ...</div>
       }

@@ -115,3 +115,22 @@ test('fetches and displays data from DELETE request', async () => {
   const responseData = screen.getByTestId('response');
   expect((responseData.textContent).includes('deleted')).toBe(true);
 });
+
+test('click history',async () => {
+  render(<App />);
+
+  fireEvent.click(screen.getByTestId('get'));
+  fireEvent.change(screen.getByLabelText('URL:'), { target: { value: 'hello' } });
+
+  fireEvent.click(screen.getByTestId('submitBtn'));
+
+
+  fireEvent.click(screen.getByTestId('historyPage'))
+  let link = screen.getByTestId('link 0')
+  fireEvent.click(link)
+
+  const responseData = screen.getByTestId('response')
+
+  expect((link.textContent)).toBe('hello');
+  expect((responseData.textContent)).toBe('[]');
+})

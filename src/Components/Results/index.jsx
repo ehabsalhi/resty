@@ -4,6 +4,8 @@ import JSONPretty from "react-json-prettify";
 
 
 function Results({ data, loading }) {
+  // console.log(loading);
+
 
   return (
     <div className="contaner-result">  
@@ -11,7 +13,6 @@ function Results({ data, loading }) {
         !loading ? 
       
       <section className='section-result' data-testid = 'response'>
-            {/* <ReactJson className='pre' src={data} displayDataTypes={false} indentWidth={2} /> */}
             <JSONPretty className='pre' json={data} />
 
       </section>

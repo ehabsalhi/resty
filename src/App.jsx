@@ -1,41 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
+import {actionTypes , reducer , initialValue} from './Components/reducer/reducer'
+
 import './App.scss';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Form from './Components/Form/index.jsx';
 import Results from './Components/Results';
 import axios from 'axios';
+import History from './Components/History/History';
 
 
 
 function App ()  {
 
-  const [data , setData] = useState(null)
-  const [requestParams, setRequestParams] = useState({})
   const [loading, setLoading] = useState(true)
-  const [getInputValue, setGetInputValue] = useState(true)
+  const [page, setPage] = useState('')
+  const [state, dispatch] = useReducer(reducer, initialValue)
+
 
 
 
 
  const callApi = (requestParams) => {
-    setRequestParams(requestParams)
-    setData(requestParams)
+   dispatch({type : actionTypes.data , payload :{value : requestParams}})
    
  }
   
   function nextBtn(e) {
-    let next = data.response.data.next
-    let previous = data.response.data.previous
+    let next = state.data.response.data.next
+    let previous = state.data.response.data.previous
     let value = null
 
     if (e.target.id === 'next' &&  next !== null) {
       value = next
       setLoading(true)
+      // dispatch({type : actionTypes.loading , payload :  {value :true}})
     }
     else if (e.target.id === 'Previous' && previous !== null) {
       value = previous
       setLoading(true)
+      // dispatch({type : actionTypes.loading , payload :  {value :true}})
+
     }
 
     axios.get(value).then((res) => {
@@ -46,7 +51,9 @@ function App ()  {
         response : res
       }
       callApi(formData);    
-       setLoading(false)
+      setLoading(false)
+      // dispatch({type : actionTypes.loading , payload :  {value :false}})
+
      })
        .catch((err) => {
        console.log(err);
@@ -56,18 +63,24 @@ function App ()  {
 
     return (
       <React.Fragment>
-        <Header />
-        <div data-testid = 'Request_Method'>Request Method: {requestParams.method}</div>
-        <div  data-testid  = 'url'>URL: {requestParams.url}</div>
-        <Form handleApiCall={callApi} setLoading={setLoading} setGetInputValue={setGetInputValue} />
-
-        <div className='nextPrev'>
-        <button id='Previous' onClick={nextBtn}>Previous</button>
-        <button id='next' onClick={nextBtn}>Next</button>
-        </div>
-
-        <Results data={data} loading={loading} />
-   
+        <Header setPage={setPage} />
+        {
+          page === 'history' ? <History /> :
+            <>
+              <div data-testid = 'Request_Method'>Request Method: {state.data.method}</div>
+              <div data-testid='url'>URL: {state.data.url}</div>
+              
+              <Form handleApiCall={callApi} setLoading = {setLoading}  />
+      
+              <div className='nextPrev'>
+              <button id='Previous' onClick={nextBtn}>Previous</button>
+              <button id='next' onClick={nextBtn}>Next</button>
+              </div>
+      
+              <Results data={state.data} loading={loading} />
+          </>
+        }
+        
         <Footer />
       </React.Fragment>
     );

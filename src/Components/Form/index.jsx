@@ -1,42 +1,64 @@
-import React, {  useState } from 'react';
+import React, {  useReducer, useState } from 'react';
 import axios from 'axios';
 import './Form.scss';
+import {actionTypes , reducer , initialValue} from '../reducer/reducer'
 
 
-function Form({ handleApiCall , setLoading , setGetInputValue}) {
-  const [inputValue, setInputValue] = useState('')
-  const [method, setMethod] = useState('')
-  const [textArea, setTextArea] = useState(null)
-  const [textAreaValue, setTextAreaValue] = useState(null)
 
+function Form({ handleApiCall  ,  setLoading}) {
+
+  const [state, dispatch] = useReducer(reducer, initialValue)
+  
 
 
  const handleSubmit = e => {
    e.preventDefault();
 
    setLoading(true)
+  //  dispatch({type : actionTypes.loading , payload : true})
 
-   if (!inputValue) {
+   
+
+   if (!state.inputValue) {
      handleApiCall({response : 'please enter url'});
      setLoading(false)
+    //  dispatch({ type: actionTypes.loading, payload: {value :false} })
      return
    }
-   if (!method) {
+   
+   if (!state.method) {
      handleApiCall({response : 'please enter method'});
      setLoading(false)
+    //  dispatch({ type: actionTypes.loading, payload: { value: false } })
+
+     
      return
    }
    // for testing method you can go to this site and take the req from it : https://api.restful-api.dev/objects
- 
-   axios[method](inputValue, JSON.parse(textAreaValue)).then((res) => {
+
+   axios[state.method](state.inputValue, state.textAreaValue ? JSON.parse(state.textAreaValue) : null)
+     .then((res) => {
 
     const formData = {
-      method:method || 'GET',
-      url: inputValue || 'https://pokeapi.co/api/v2/pokemon',
+      method:state.method || 'GET',
+      url: state.inputValue ,
       response : res
     }
-     handleApiCall(formData);    
-     setLoading(false)
+
+       
+       let parsData = []
+       if (localStorage.getItem("data")) {
+        parsData = JSON.parse(localStorage.getItem("data"))
+        }
+      parsData.push(formData)
+      localStorage.setItem("data", JSON.stringify(parsData))
+
+
+      handleApiCall(formData);    
+       setLoading(false)
+      // dispatch({ type: actionTypes.loading , payload: {value :false} })
+
+
    })
      .catch((err) => {
      console.log(err);
@@ -45,10 +67,10 @@ function Form({ handleApiCall , setLoading , setGetInputValue}) {
 
   
   const inputData = (e) => {
-    setInputValue(e.target.value)
+    dispatch({ type: actionTypes.inputValue, payload: { value: e.target.value } })
   }
   const textAreaData = (e) => {
-    setTextAreaValue(e.target.value)
+    dispatch({type : actionTypes.textAreaValue , payload : {value : e.target.value}})
   }
 
   const getMethod = (e) => {
@@ -56,8 +78,11 @@ function Form({ handleApiCall , setLoading , setGetInputValue}) {
     methods.forEach(ele => ele.classList.remove('active'))
     e.target.classList.add('active')
 
-    setMethod(e.target.id)
-    e.target.innerText === 'post' || e.target.innerText === 'put' ? setTextArea(true) : setTextArea(false)
+    dispatch({type : actionTypes.method , payload : {value :e.target.id }})
+
+    e.target.innerText === 'post' || e.target.innerText === 'put' ?
+      dispatch({ type: actionTypes.textArea, payload: true })
+      : dispatch({ type: actionTypes.textArea, payload: false })
   }
 
 
@@ -78,7 +103,7 @@ function Form({ handleApiCall , setLoading , setGetInputValue}) {
             <span onClick={getMethod} id="delete" data-testid= 'delete'>delete</span>
           </label>
           {
-            textArea === true ? <label>
+            state.textArea === true ? <label>
           <textarea  className='textArea' cols="35" rows="10" placeholder='JSON Data' onChange={textAreaData}></textarea>
           </label> : null
           }
